@@ -111,10 +111,13 @@
 </head>
 <body>
     <!-- Instagram Browser Detection Banner -->
-    <div id="instagram-banner" style="display: none; position: fixed; top: 0; left: 0; right: 0; background: #E1306C; color: white; padding: 16px; text-align: center; z-index: 9999; font-size: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+    <div id="instagram-banner" style="display: none; position: fixed; top: 0; left: 0; right: 0; background: #E1306C; color: white; padding: 20px; text-align: center; z-index: 9999; font-size: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
         <div style="max-width: 600px; margin: 0 auto;">
-            <strong>📱 You're viewing this in Instagram</strong><br>
-            <span style="font-size: 13px;">Tap the "•••" menu button and select "Open in Browser" for the best experience</span>
+            <strong style="font-size: 18px;">📱 Please Open in Your Browser</strong><br><br>
+            <span style="font-size: 14px; line-height: 1.6;">
+                Tap the <strong>"•••"</strong> menu in the top right corner<br>
+                and select <strong>"Open in Browser"</strong> or <strong>"Open in Safari/Chrome"</strong>
+            </span>
         </div>
     </div>
 
@@ -128,35 +131,37 @@
         // Show banner if in Instagram
         if (isInstagram()) {
             document.getElementById('instagram-banner').style.display = 'block';
-            // Add padding to body to account for banner
-            document.body.style.paddingTop = '80px';
+            document.body.style.paddingTop = '100px';
         }
 
-        // Add click handler to all external links
+        // Block all link clicks when in Instagram
         document.addEventListener('DOMContentLoaded', function() {
-            const links = document.querySelectorAll('.link-button[target="_blank"]');
+            const links = document.querySelectorAll('.link-button');
             
             links.forEach(link => {
                 link.addEventListener('click', function(e) {
                     if (isInstagram()) {
                         e.preventDefault();
-                        const url = this.href;
+                        e.stopPropagation();
                         
-                        // Try multiple methods to break out of Instagram
+                        // Optional: Add visual feedback
+                        this.style.opacity = '0.5';
+                        setTimeout(() => {
+                            this.style.opacity = '1';
+                        }, 200);
                         
-                        // Method 1: Try intent URL for Android
-                        if (navigator.userAgent.match(/Android/i)) {
-                            window.location = 'intent://' + url.replace(/https?:\/\//, '') + '#Intent;end';
-                            setTimeout(() => {
-                                window.location = url;
-                            }, 500);
-                        } 
-                        // Method 2: For iOS, open normally and rely on the banner message
-                        else {
-                            window.open(url, '_blank');
-                        }
+                        // Scroll to top to show the banner
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        
+                        return false;
                     }
                 });
+                
+                // Visual indication that links are disabled in Instagram
+                if (isInstagram()) {
+                    link.style.cursor = 'not-allowed';
+                    link.style.opacity = '0.6';
+                }
             });
         });
     </script>

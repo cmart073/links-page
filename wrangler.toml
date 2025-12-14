@@ -1,0 +1,13 @@
+name = "linktree-redirect"
+main = "worker.js"
+compatibility_date = "2024-12-01"
+
+# Workers Sites configuration for static assets
+# This allows the Worker to serve your HTML files
+[site]
+bucket = "./public"
+
+# Optional: Add custom domains here after deployment
+# routes = [
+#   { pattern = "links.yourdomain.com/*", zone_name = "yourdomain.com" }
+# ]
